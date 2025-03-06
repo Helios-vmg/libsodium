@@ -67,6 +67,8 @@ EXTRA_DIST = \
 	secretstream.exp \
 	shorthash.exp \
 	sign.exp \
+	sign_bv_compat.exp \
+	batch.exp \
 	siphashx24.exp \
 	sodium_core.exp \
 	sodium_utils.exp \
@@ -78,6 +80,7 @@ EXTRA_DIST = \
 	stream3.exp \
 	stream4.exp \
 	verify1.exp \
+	vrf.exp \
 	xchacha20.exp
 
 DISTCLEANFILES = \
@@ -145,6 +148,8 @@ DISTCLEANFILES = \
 	secretstream.res \
 	shorthash.res \
 	sign.res \
+	sign_bv_compat.res \
+	batch.res \
 	siphashx24.res \
 	sodium_core.res \
 	sodium_utils.res \
@@ -156,6 +161,7 @@ DISTCLEANFILES = \
 	stream3.res \
 	stream4.res \
 	verify1.res \
+	vrf.res \
 	xchacha20.res
 
 if NATIVECLIENT
@@ -224,6 +230,8 @@ CLEANFILES = \
 	secretstream.final \
 	shorthash.final \
 	sign.final \
+	sign_bv_compat.final \
+	batch.final \
 	siphashx24.final \
 	sodium_core.final \
 	sodium_utils.final \
@@ -298,6 +306,8 @@ CLEANFILES = \
 	secretstream.nexe \
 	shorthash.nexe \
 	sign.nexe \
+	sign_bv_compat.nexe \
+	batch.nexe \
 	siphashx24.nexe \
 	sodium_core.nexe \
 	sodium_utils.nexe \
@@ -380,6 +390,8 @@ TESTS_TARGETS = \
 	secretstream \
 	shorthash \
 	sign \
+	sign_bv_compat \
+	batch \
 	sodium_core \
 	sodium_utils \
 	sodium_version \
@@ -387,7 +399,8 @@ TESTS_TARGETS = \
 	stream2 \
 	stream3 \
 	stream4 \
-	verify1
+	verify1 \
+	vrf
 
 if !EMSCRIPTEN
 if !NATIVECLIENT
@@ -593,6 +606,12 @@ shorthash_LDADD           = $(TESTS_LDADD)
 sign_SOURCE               = cmptest.h sign.c
 sign_LDADD                = $(TESTS_LDADD)
 
+sign_bv_compat_SOURCE               = cmptest.h sign_bv_compat.c
+sign_bv_compat_LDADD                = $(TESTS_LDADD)
+
+batch_SOURCE               = cmptest.h batch.c
+batch_LDADD                = $(TESTS_LDADD)
+
 siphashx24_SOURCE         = cmptest.h siphashx24.c
 siphashx24_LDADD          = $(TESTS_LDADD)
 
@@ -625,6 +644,9 @@ stream4_LDADD             = $(TESTS_LDADD)
 
 verify1_SOURCE            = cmptest.h verify1.c
 verify1_LDADD             = $(TESTS_LDADD)
+
+vrf_SOURCE                = cmptest.h vrf.c
+vrf_LDADD                 = $(TESTS_LDADD)
 
 xchacha20_SOURCE          = cmptest.h xchacha20.c
 xchacha20_LDADD           = $(TESTS_LDADD)

@@ -36,6 +36,7 @@ AC_SUBST(DLL_VERSION)
 
 AC_LANG_ASSERT(C)
 LX_CFLAGS=${CFLAGS-NONE}
+PKGCONFIG_LIBS_PRIVATE=""
 
 dnl Path check
 
@@ -127,6 +128,7 @@ AS_IF([test "x$withval" = "xyes"], [
     AC_DEFINE([HAVE_PTHREAD], [1], [Define if you have POSIX threads libraries and header files])
     with_threads="yes"
     LIBS="$PTHREAD_LIBS $LIBS"
+    PKGCONFIG_LIBS_PRIVATE="$PTHREAD_LIBS $PTHREAD_CFLAGS $PKGCONFIG_LIBS_PRIVATE"
     CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
     CC="$PTHREAD_CC"])
 ], [with_threads="no"])
@@ -185,12 +187,15 @@ AC_ARG_ENABLE(opt,
 [
   AS_IF([test "x$enableval" = "xyes"], [
     AX_CHECK_COMPILE_FLAG([-Ofast], [CFLAGS="$CFLAGS -Ofast"])
+    AX_CHECK_COMPILE_FLAG([-ftree-vectorize], [CFLAGS="$CFLAGS -ftree-vectorize"])
+    AX_CHECK_COMPILE_FLAG([-ftree-slp-vectorize], [CFLAGS="$CFLAGS -ftree-slp-vectorize"])
     AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CFLAGS="$CFLAGS -fomit-frame-pointer"])
     AX_CHECK_COMPILE_FLAG([-march=native], [CFLAGS="$CFLAGS -march=native"])
   ])
 ])
 
-AC_SUBST([MAINT])
+AC_SUBST(MAINT)
+AC_SUBST(PKGCONFIG_LIBS_PRIVATE)
 
 AX_VALGRIND_CHECK
 
@@ -211,7 +216,7 @@ AC_CHECK_DEFINE([_FORTIFY_SOURCE], [], [
 AX_CHECK_COMPILE_FLAG([-fvisibility=hidden],
   [CFLAGS="$CFLAGS -fvisibility=hidden"])
 
-AS_CASE([$host_os], [cygwin*|mingw*|msys|pw32*|cegcc*], [ ], [
+AS_CASE([$host_os], [cygwin*|pw32*|mingw*|msys|cegcc*], [ ], [
   AX_CHECK_COMPILE_FLAG([-fPIC], [CFLAGS="$CFLAGS -fPIC"])
 ])
 
@@ -257,14 +262,14 @@ AC_ARG_ENABLE(soname-versions,
 )
 
 AS_CASE([$host_os],
-  [cygwin*|mingw*|msys|pw32*|cegcc*], [
+  [cygwin*|pw32*|mingw*|msys|cegcc*], [
     AX_CHECK_LINK_FLAG([-Wl,--dynamicbase], [LDFLAGS="$LDFLAGS -Wl,--dynamicbase"])
     AX_CHECK_LINK_FLAG([-Wl,--high-entropy-va], [LDFLAGS="$LDFLAGS -Wl,--high-entropy-va"])
     AX_CHECK_LINK_FLAG([-Wl,--nxcompat], [LDFLAGS="$LDFLAGS -Wl,--nxcompat"])
   ])
 
 AS_CASE([$host_os],
-  [cygwin*|mingw*|msys|pw32*|cegcc*], [
+  [cygwin*|pw32*|mingw*|msys|cegcc*], [
     AX_CHECK_COMPILE_FLAG([-fno-asynchronous-unwind-tables], [
       [CFLAGS="$CFLAGS -fno-asynchronous-unwind-tables"]
     ])
@@ -273,7 +278,7 @@ AS_CASE([$host_os],
 AS_IF([test "x$enable_ssp" != "xno"],[
 
 AS_CASE([$host_os],
-  [cygwin*|mingw*|msys|pw32*|cegcc*|haiku], [ ],
+  [cygwin*|pw32*|mingw*|msys|cegcc*|haiku], [ ],
   [*], [
     AX_CHECK_COMPILE_FLAG([-fstack-protector], [
       AX_CHECK_LINK_FLAG([-fstack-protector],
