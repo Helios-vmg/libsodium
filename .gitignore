@@ -158,3 +158,8 @@ test/default/vrf
 test/default/xchacha20
 test/js.done
 testing
+
+.vs
+*.exe
+*.obj
+*.vcxproj.user
